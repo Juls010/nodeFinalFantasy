@@ -1,0 +1,27 @@
+// formulario del new character donde se pueden introducir sus valores y guardarlo.
+// también contiene un enlace de vuelta a la vista list.pug
+extends layout
+
+block content
+    h1 New character
+    p
+        a(href='/list') Back
+
+    form(action='/new', method='POST')
+        div
+            label(for='id') ID:
+            input(type='number', name='id', required)
+        div
+            label(for='name') Name:
+            input(type='text', name='name', required)
+        div
+            label(for='job') Job:
+            input(type='text', name='job', required)
+        div
+            label(for='weapon') Weapon:
+            input(type='text', name='weapon', required)
+        div
+            label(for='level') Level:
+            input(type='number', name='level', required)
+        
+        button(type='submit') Save
