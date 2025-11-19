@@ -70,35 +70,28 @@ app.post('/characters', (req,res) => {
 
 // actualizar un character
 app.put('/characters/:id', (req,res) => {
-    const id = parseInt(req.params.id); 
+    const id = parseInt(req.params.id);
     const updatedData = req.body;
     const index = findCharacterIndex(id);
 
-    if (index === -1) {
-        res.status(404).send('Character does not exist'); 
-    }
+    if (index === -1) return res.status(404).send('Character does not exist');
+    if (!updatedData || Object.keys(updatedData).length === 0) return res.sendStatus(400);
 
-    if (Object.keys(updatedData).length === 0) {
-        res.sendStatus(400); 
-    }
-
-    if (updatedData.level) { 
+    if (updatedData.level !== undefined) {
         const level = parseInt(updatedData.level);
-        if (isNaN(level) || level < 1 || level > 99) {
-            res.status(400).send('Level must be between 1 and 99'); 
-        }
+        if (isNaN(level) || level < 1 || level > 99) return res.status(400).send('Level must be between 1 and 99');
         updatedData.level = level;
     }
-    
-    const isExist = characters.some((c, i) => 
-        i !== index && (c.id === updatedData.id || c.name ===updatedData.name));
 
-    if (isExist) {
-        res.sendStatus(400); 
-    }
+    const isExist = characters.some((c, i) =>
+        i !== index && (c.id === updatedData.id || c.name === updatedData.name)
+    );
 
-    characters[index] = {...characters[index], ...updatedData, id: characters[index].id};
-    res.sendStatus(204); 
+    if (isExist) return res.sendStatus(400);
+
+    characters[index] = { ...characters[index], ...updatedData, id: characters[index].id };
+
+    return res.status(204).json(characters[index]); // devuelve el personaje completo
 });
 
 // borrar por id un character
