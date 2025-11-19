@@ -74,12 +74,16 @@ app.put('/characters/:id', (req,res) => {
     const updatedData = req.body;
     const index = findCharacterIndex(id);
 
+    console.log("Recibido en PUT:", updatedData);
     if (index === -1) return res.status(404).send('Character does not exist');
+
     if (!updatedData || Object.keys(updatedData).length === 0) return res.sendStatus(400);
 
     if (updatedData.level !== undefined) {
         const level = parseInt(updatedData.level);
-        if (isNaN(level) || level < 1 || level > 99) return res.status(400).send('Level must be between 1 and 99');
+        if (isNaN(level) || level < 1 || level > 99) {
+        return res.status(400).send('Level must be between 1 and 99');
+        }
         updatedData.level = level;
     }
 
@@ -91,7 +95,7 @@ app.put('/characters/:id', (req,res) => {
 
     characters[index] = { ...characters[index], ...updatedData, id: characters[index].id };
 
-    return res.status(204).json(characters[index]); // devuelve el personaje completo
+    res.sendStatus(204);
 });
 
 // borrar por id un character
